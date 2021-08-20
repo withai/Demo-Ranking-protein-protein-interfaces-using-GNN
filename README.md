@@ -10,6 +10,13 @@ This repository uses Graph Neural Networks (GNN's) to rank the docked protein co
 -  <a href=https://pandas.pydata.org/docs/getting_started/install.html#installing-from-pypi>Pandas</a>
 -  <a href=https://matplotlib.org/stable/users/installing.html>Matplolib</a>
 
+## Install dependencies <br>
+
+```bash
+pip3 install -r requirements.txt
+```
+
+
 ## Usage
 
 ```bash 

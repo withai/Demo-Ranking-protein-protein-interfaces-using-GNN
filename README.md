@@ -2,7 +2,7 @@
 
 This repository uses Graph Neural Networks (GNN's) to rank the docked protein complexes in the order of near-nativity to its co-crystalized native complex.
 
-Run on Google collab: &nbsp; <a href="https://colab.research.google.com/github/withai/Demo-Ranking-protein-protein-interfaces-using-GNN/blob/master/Ranking%20protein-protein%20interfaces%20using%20Graph%20Convolution.ipynb" target="_blank">
+Run on Google collab: &nbsp; <a href="https://colab.research.google.com/github/withai/Demo-Ranking-protein-protein-interfaces-using-GNN/blob/master/Ranking%20protein-protein%20interfaces%20using%20Graph%20Convolution.ipynb" target="_blank" rel="noopener noreferrer">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 

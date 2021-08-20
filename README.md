@@ -5,7 +5,7 @@ This repository uses Graph Neural Networks (GNN's) to rank the docked protein co
 ## Dependency <br>
 -  <a href=https://www.python.org/downloads/source/>Python 3.7 </a> <br>
 -  <a href=https://jupyter.org/install>Jupyter notebook </a> <br>
--  <a href=https://pytorch.org/>PyTorch 1.9.0 library </a> (Deep learning library) <br>
+-  <a href=https://pytorch.org/>PyTorch 1.9.0 library </a> <br>
 -  <a href=https://pypi.org/project/numpy/>NumPy</a> <br>
 -  <a href=https://pandas.pydata.org/docs/getting_started/install.html#installing-from-pypi>Pandas</a>
 -  <a href=https://matplotlib.org/stable/users/installing.html>Matplolib</a>

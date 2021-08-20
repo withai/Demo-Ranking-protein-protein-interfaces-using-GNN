@@ -68,7 +68,6 @@ class Dataset(data.Dataset):
             data["int_indices"] = torch.from_numpy(int_indices).type(torch.long)
             data["nh_edges"] = torch.from_numpy(nh_edges).type(torch.float)
             data["int_edges"] = torch.from_numpy(int_edges).type(torch.float)
-            data["is_int"] = torch.from_numpy(is_int).type(torch.uint8)
 
             dockq_decoy_key = decoy_pick_file[:-4] + ".pdb"
             data["dockq_score"] = pickle.load(dockq_score_file)[dockq_decoy_key]

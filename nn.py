@@ -14,7 +14,9 @@ class Dense(nn.Module):
         self.dropout = dropout
         self.trainable = trainable
         self.merge = merge
-        self.device = torch.device("cuda")
+        
+        use_cuda = torch.cuda.is_available()
+        self.device = torch.device("cuda:0" if use_cuda else "cpu")
 
         self.W = nn.Parameter(init.kaiming_uniform_(torch.randn(in_dims, out_dims, requires_grad=self.trainable)).type(torch.float).to(self.device))
         self.b = nn.Parameter(torch.zeros(out_dims, requires_grad=self.trainable).type(torch.float).to(self.device))

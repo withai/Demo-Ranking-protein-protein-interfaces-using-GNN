@@ -89,10 +89,9 @@ def test(model, device, test_loader, threshold, top_ns):
                 int_indices = item["int_indices"].to(device)
                 nh_edges = item["nh_edges"].to(device)
                 int_edges = item["int_edges"].to(device)
-                is_int = item["is_int"].to(device)
 
 
-                model_input = (vertices, nh_indices, int_indices, nh_edges, int_edges, is_int)
+                model_input = (vertices, nh_indices, int_indices, nh_edges, int_edges)
 
                 output = model(model_input)
 

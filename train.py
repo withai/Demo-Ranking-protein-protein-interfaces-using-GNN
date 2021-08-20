@@ -24,12 +24,11 @@ def train(model, device, train_loader, optimizer, epoch, mini_batches_per_epoch,
             int_indices = item["int_indices"].to(device)
             nh_edges = item["nh_edges"].to(device)
             int_edges = item["int_edges"].to(device)
-            is_int = item["is_int"].to(device)
             scores = item["dockq_score"].to(device)
 
             target.append(scores)
 
-            model_input = (vertices, nh_indices, int_indices, nh_edges, int_edges, is_int)
+            model_input = (vertices, nh_indices, int_indices, nh_edges, int_edges)
 
             output = model(model_input)
 

@@ -40,7 +40,7 @@ def model_near_native_ranks(model, scores, top_n=20, dockq_thresh=0.65):
 
             for i, value in enumerate(pcomplex_decoys):
                 decoy_name, decoy_score = value
-                if(pcomplex_decoys_dockq[i] > 0):
+                if(pcomplex_decoys_dockq[i] > dockq_thresh):
                     pcomplex_ranks.append((i+1, pcomplex_decoys_dockq[i], decoy_name))
                     is_valid_pcomplex = True
         
@@ -59,6 +59,36 @@ def model_near_native_ranks(model, scores, top_n=20, dockq_thresh=0.65):
             top_n_present += 1
 
     return top_n_present, len(model_ranks)
+
+def get_scores_dockq(model, scores):
+    
+    model_scores_dict = scores
+
+    pcomplexes = list(model_scores_dict.keys())
+    pcomplexes.sort()
+    
+    result = {}
+    for pcomplex_name in pcomplexes:
+        dockq_prot_path = _get_dockq_scores_file_name(pcomplex_name)
+        
+        result[pcomplex_name] = {}
+        with open(dockq_prot_path, "rb") as f:
+            dockq_dict = pickle.load(f)
+
+            pcomplex_decoys = list(model_scores_dict[pcomplex_name].items())
+
+            
+            pcomplex_decoys.sort(key=lambda tup:tup[1], reverse=True)
+            
+            pcomplex_decoys_dockq = [dockq_dict[decoy_name[:-4]+".pdb"][0] for decoy_name, score in pcomplex_decoys]
+            pcomplex_decoys_pred_scores = [predicted_score for decoy_name, predicted_score in pcomplex_decoys]
+            
+            result[pcomplex_name]["dockq"] = pcomplex_decoys_dockq
+            result[pcomplex_name]["pred_score"] = pcomplex_decoys_pred_scores
+
+    return result
+            
+    
 
 def test(model, device, test_loader, threshold, top_ns):
     model.eval()
@@ -109,7 +139,9 @@ def test(model, device, test_loader, threshold, top_ns):
             top_n_near_native, total_near_native_complexes = model_near_native_ranks(
                 model, model_scores, top_n=top_n, dockq_thresh=threshold)
             
-            top_n_results.append(total_near_native_complexes)
+            top_n_results.append(top_n_near_native)
+        
+        scores_dockq = get_scores_dockq(model, model_scores)
                     
             
-        return top_n_results
+        return top_n_results, scores_dockq

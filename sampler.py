@@ -5,7 +5,7 @@ from torch.utils.data import Sampler
 
 class CustomSampler(Sampler):
 
-    def __init__(self, batch_complexes, decoys_per_complex, dataset_path, dataset_cat, random_sample=False):
+    def __init__(self, batch_complexes, decoys_per_complex, dataset_path, dataset_cat, random_sample=False, verbose=True):
         self.batch_complexes = batch_complexes
         self.decoys_per_complex = decoys_per_complex
         self.dataset_cat = dataset_cat
@@ -17,7 +17,9 @@ class CustomSampler(Sampler):
         self.pcomplex_names = os.listdir(self.dataset_cat_path)
         
         self.dataset_len = len(self.pcomplex_names)
-        print("No. of " + dataset_cat + " complexes: " + str(self.dataset_len))
+        
+        if(verbose):
+            print("No. of " + dataset_cat + " complexes: " + str(self.dataset_len))
 
     def __iter__(self):
 

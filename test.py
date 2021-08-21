@@ -4,63 +4,12 @@ import os
 import sys
 import numpy as np
 
-def _get_dockq_scores_file_name(pcomplex_pick_name):
-    dataset_cat_path = "data/test"
+def _get_dockq_scores_file_name(pcomplex_pick_name, dataset):
+    dataset_cat_path = os.path.join("data", dataset)
     dockq_file = os.path.join(dataset_cat_path, pcomplex_pick_name, "dockq", pcomplex_pick_name+".pkl")
     return dockq_file
-    
-def model_near_native_ranks(model, scores, top_n=20, dockq_thresh=0.65):
-    model_scores_dict = scores
 
-    pcomplexes = list(model_scores_dict.keys())
-    pcomplexes.sort()
-
-    total_top_20_decoys = 0
-    total_hq_decoys = 0
-
-    total_complexes = []
-
-    near_native_ranks = []
-
-    for pcomplex_name in pcomplexes:
-        pcomplex_ranks = []
-
-        is_valid_pcomplex = False
-        
-        dockq_prot_path = _get_dockq_scores_file_name(pcomplex_name)
-        with open(dockq_prot_path, "rb") as f:
-            dockq_dict = pickle.load(f)
-
-            pcomplex_decoys = list(model_scores_dict[pcomplex_name].items())
-
-            
-            pcomplex_decoys.sort(key=lambda tup:tup[1], reverse=True)
-            
-            pcomplex_decoys_dockq = [dockq_dict[decoy_name[:-4]+".pdb"][0] for decoy_name, score in pcomplex_decoys]
-
-            for i, value in enumerate(pcomplex_decoys):
-                decoy_name, decoy_score = value
-                if(pcomplex_decoys_dockq[i] > dockq_thresh):
-                    pcomplex_ranks.append((i+1, pcomplex_decoys_dockq[i], decoy_name))
-                    is_valid_pcomplex = True
-        
-        if(len(pcomplex_ranks) > 0):
-            pcomplex_ranks.sort(key=lambda tup:tup[1], reverse=True)
-            near_native_ranks.append(pcomplex_ranks[0][0])
-
-        if(is_valid_pcomplex):
-            total_complexes.append(pcomplex_name)
-
-    model_ranks = [rank for rank in near_native_ranks if(rank != None)]
-
-    top_n_present = 0
-    for rank in model_ranks:
-        if(rank<=top_n):
-            top_n_present += 1
-
-    return top_n_present, len(model_ranks)
-
-def get_scores_dockq(model, scores):
+def get_scores_dockq(model, scores, dataset):
     
     model_scores_dict = scores
 
@@ -69,7 +18,7 @@ def get_scores_dockq(model, scores):
     
     result = {}
     for pcomplex_name in pcomplexes:
-        dockq_prot_path = _get_dockq_scores_file_name(pcomplex_name)
+        dockq_prot_path = _get_dockq_scores_file_name(pcomplex_name, dataset)
         
         result[pcomplex_name] = {}
         with open(dockq_prot_path, "rb") as f:
@@ -90,7 +39,7 @@ def get_scores_dockq(model, scores):
             
     
 
-def test(model, device, test_loader, threshold, top_ns):
+def test(model, device, test_loader, dataset):
     model.eval()
     test_loss = 0
     mini_batches = 0
@@ -131,17 +80,7 @@ def test(model, device, test_loader, threshold, top_ns):
                     model_scores[prot_name] = {}
                 
                 model_scores[prot_name][decoy_name] = output.item()
-                    
-                
-
-        top_n_results = []
-        for top_n in top_ns:
-            top_n_near_native, total_near_native_complexes = model_near_native_ranks(
-                model, model_scores, top_n=top_n, dockq_thresh=threshold)
-            
-            top_n_results.append(top_n_near_native)
         
-        scores_dockq = get_scores_dockq(model, model_scores)
-                    
+        scores_dockq = get_scores_dockq(model, model_scores, dataset)   
             
-        return top_n_results, scores_dockq
+        return scores_dockq
